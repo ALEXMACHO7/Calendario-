@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Calendario de Regalos - 5 Días</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #0f172a;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .titulo {
+            font-size: 26px;
+            font-weight: bold;
+            color: #ffaa00;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .subtitulo {
+            font-size: 14px;
+            color: #94a3b8;
+            margin-bottom: 30px;
+        }
+
+        /* --- CONTENEDOR DEL CALENDARIO --- */
+        .calendario-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            width: 100%;
+            max-width: 340px;
+            margin-bottom: 20px;
+        }
+
+        /* El día 5 ocupa todo el ancho de abajo */
+        .dia-card.dia-5 {
+            grid-column: span 2;
+        }
+
+        .dia-card {
+            background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 16px;
+            padding: 20px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        /* Estados de los días */
+        .dia-card.disponible {
+            border-color: #00fff0;
+            box-shadow: 0 0 15px rgba(0, 255, 240, 0.2);
+        }
+        .dia-card.disponible:active {
+            transform: scale(0.95);
+        }
+
+        .dia-card.bloqueado {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .dia-card.reclamado {
+            border-color: #ff3366;
+            background: #111827;
+            cursor: default;
+        }
+
+        .dia-numero {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #cbd5e1;
+        }
+
+        .dia-icono {
+            font-size: 35px;
+            margin-bottom: 5px;
+        }
+
+        .dia-estado-texto {
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        /* --- POP-UP DE PREMIO --- */
+        .pantalla-premio {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.96);
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            padding: 20px;
+        }
+
+        .tarjeta-premio {
+            background: #1e293b;
+            padding: 30px;
+            border-radius: 25px;
+            border: 3px solid #ffaa00;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .btn-entendido {
+            background-color: #00fff0;
+            color: #000;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        .firma-alex {
+            margin-top: 25px;
+            font-family: 'Georgia', serif;
+            font-style: italic;
+            font-size: 26px;
+            color: rgba(255, 255, 255, 0.35);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1 class="titulo">Regalos Diarios</h1>
+    <p class="subtitulo">Regresa cada 24 horas para reclamar el siguiente día</p>
+
+    <!-- Rejilla del Calendario -->
+    <div class="calendario-grid">
+        <div class="dia-card" id="card-1" onclick="reclamarDia(1)">
+            <div class="dia-numero">Día 1</div>
+            <div class="dia-icono" id="icono-1">🧪</div>
+            <div class="dia-estado-texto" id="estado-1" style="color: #00fff0;">Disponible</div>
+        </div>
+        <div class="dia-card" id="card-2" onclick="reclamarDia(2)">
+            <div class="dia-numero">Día 2</div>
+            <div class="dia-icono" id="icono-2">🔒</div>
+            <div class="dia-estado-texto" id="estado-2" style="color: #94a3b8;">Bloqueado</div>
+        </div>
+        <div class="dia-card" id="card-3" onclick="reclamarDia(3)">
+            <div class="dia-numero">Día 3</div>
+            <div class="dia-icono" id="icono-3">🔒</div>
+            <div class="dia-estado-texto" id="estado-3" style="color: #94a3b8;">Bloqueado</div>
+        </div>
+        <div class="dia-card" id="card-4" onclick="reclamarDia(4)">
+            <div class="dia-numero">Día 4</div>
+            <div class="dia-icono" id="icono-4">🔒</div>
+            <div class="dia-estado-texto" id="estado-4" style="color: #94a3b8;">Bloqueado</div>
+        </div>
+        <div class="dia-card dia-5" id="card-5" onclick="reclamarDia(5)">
+            <div class="dia-numero">Día 5 (Gran Final)</div>
+            <div class="dia-icono" id="icono-5">🔒</div>
+            <div class="dia-estado-texto" id="estado-5" style="color: #94a3b8;">Bloqueado</div>
+        </div>
+    </div>
+
+    <!-- Mensaje Recordatorio General -->
+    <p id="tiempo-restante-global" style="font-size: 13px; color: #ffaa00; height: 18px; font-weight: bold;"></p>
+
+    <!-- Pop-up Recompensa -->
+    <div class="pantalla-premio" id="pantalla-premio">
+        <div class="tarjeta-premio">
+            <h2 id="popup-titulo" style="color: #00fff0; font-size: 20px;">¡DÍA RECLAMADO!</h2>
+            <div style="font-size: 55px; margin: 15px 0;">🎉</div>
+            <p id="texto-premio" style="font-size: 17px; font-weight: bold; margin-bottom: 10px; color: #ffaa00;"></p>
+            <p style="color: #ccc; font-size: 13px; line-height: 1.4;">Quita una captura de pantalla completa y envíasela a Alex para verificar.</p>
+            <button class="btn-entendido" onclick="cerrarPopup()">Entendido</button>
+        </div>
+    </div>
+
+    <div class="firma-alex">Alex.</div>
+
+    <script>
+        // Tus nuevas recompensas oficiales del evento
+        const recompensasCalendario = {
+            1: "2 pociones de crecimiento para tu mascota 🧪",
+            2: "3 regalos medianos 📦",
+            3: "4 huevos rotos 🥚⚡",
+            4: "3 huevos básicos 🥚✨",
+            5: "1 pet raro 🐾"
+        };
+
+        const iconosEvolucion = {
+            1: "🧪", 2: "📦", 3: "🥚", 4: "🥚", 5: "🐾"
+        };
+
+        let tiempoBloqueoMs = 24 * 60 * 60 * 1000; // 24 Horas de bloqueo entre días
+
+        window.onload = function() {
+            actualizarInterfazCalendario();
+            setInterval(actualizarInterfazCalendario, 1000);
+        };
+
+        function actualizarInterfazCalendario() {
+            let ultimoReclamado = parseInt(localStorage.getItem("cal_ultimoDia")) || 0;
+            let tiempoUltimoReclamado = parseInt(localStorage.getItem("cal_tiempoUltimo")) || 0;
+            let ahora = Date.now();
+
+            let tiempoPasado = ahora - tiempoUltimoReclamado;
+            let faltaParaSiguiente = tiempoBloqueoMs - tiempoPasado;
+
+            document.getElementById("tiempo-restante-global").innerText = "";
+
+            for (let i = 1; i <= 5; i++) {
+                const card = document.getElementById(`card-${i}`);
+                const icono = document.getElementById(`icono-${i}`);
+                const estado = document.getElementById(`estado-${i}`);
+
+                if (i <= ultimoReclamado) {
+                    card.className = "dia-card reclamado";
+                    icono.innerText = "✅";
+                    estado.innerText = "Reclamado";
+                    estado.style.color = "#ff3366";
+                } 
+                else if (i === ultimoReclamado + 1) {
+                    if (ultimoReclamado === 0 || faltaParaSiguiente <= 0) {
+                        card.className = "dia-card disponible";
+                        icono.innerText = iconosEvolucion[i];
+                        estado.innerText = "¡Toca para abrir!";
+                        estado.style.color = "#00fff0";
+                    } else {
+                        card.className = "dia-card bloqueado";
+                        icono.innerText = "⏳";
+                        
+                        let horas = Math.floor(faltaParaSiguiente / (1000 * 60 * 60));
+                        let minutos = Math.floor((faltaParaSiguiente % (1000 * 60 * 60)) / (1000 * 60));
+                        let segundos = Math.floor((faltaParaSiguiente % (1000 * 60)) / 1000);
+                        
+                        estado.innerText = `Espera: ${horas}h ${minutos}m ${segundos}s`;
+                        estado.style.color = "#ffaa00";
+                        document.getElementById("tiempo-restante-global").innerText = `Próximo regalo disponible en: ${horas}h ${minutos}m ${segundos}s`;
+                    }
+                } 
+                else {
+                    card.className = "dia-card bloqueado";
+                    icono.innerText = "🔒";
+                    estado.innerText = "Bloqueado";
+                    estado.style.color = "#94a3b8";
+                }
+            }
+        }
+
+        function reclamarDia(diaApretado) {
+            let ultimoReclamado = parseInt(localStorage.getItem("cal_ultimoDia")) || 0;
+            let tiempoUltimoReclamado = parseInt(localStorage.getItem("cal_tiempoUltimo")) || 0;
+            let ahora = Date.now();
+
+            if (diaApretado !== ultimoReclamado + 1) return;
+            if (ultimoReclamado > 0 && (ahora - tiempoUltimoReclamado) < tiempoBloqueoMs) return;
+
+            localStorage.setItem("cal_ultimoDia", diaApretado);
+            localStorage.setItem("cal_tiempoUltimo", ahora);
+            localStorage.setItem(`cal_premio_guardado_${diaApretado}`, recompensasCalendario[diaApretado]);
+
+            document.getElementById("texto-premio").innerText = `${recompensasCalendario[diaApretado]}`;
+            
+            if(diaApretado === 5) {
+                document.getElementById("popup-titulo").innerText = "¡CALENDARIO COMPLETADO!";
+            }
+            
+            document.getElementById("pantalla-premio").style.display = "flex";
+            actualizarInterfazCalendario();
+        }
+
+        function cerrarPopup() {
+            document.getElementById("pantalla-premio").style.display = "none";
+        }
+    </script>
+</body>
+  </html>
+  
